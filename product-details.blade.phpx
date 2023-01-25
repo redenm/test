@@ -3,6 +3,16 @@
     .select-option-has-error{
         border: 1px solid #ff5454;
     }
+
+    .product__details__content__options label {
+        line-height: 1.5;
+        text-align: left;
+        font-family: "Open Sans", sans-serif;
+        box-sizing: border-box;
+        font-size: 18px;
+        font-weight: 600;
+        color: #262626;
+    }
 </style>
 @section('content')
     @php
@@ -299,7 +309,7 @@
                                             @elseif ($product_details->id == 55)
                                             <span>Size/Model</span>
                                             @else
-                                            <span>Size</span>
+                                            <label for="size">Size</label>
                                             @endif
 
                                         </div>
@@ -376,7 +386,7 @@
                                         <div class="col-md-5 col-sm-6">
                                             
                              
-                                        <span>Firmness</span>
+                                        <label for="firm">Firmness</label>
                                             
 
                                         </div>
@@ -462,7 +472,7 @@
                                             @elseif ($product_details->slug == 'add-custom-firmness-option')
                                             <span>Firmness</span>
                                             @else
-                                            <span>Color</span>
+                                            <label for="color_firm">Color</label>
                                             @endif
 
                                         </div>
@@ -549,7 +559,7 @@
                                             @elseif ($product_details->id == 87)
                                             <span>Additional Ring</span>
                                             @else
-                                            <span>Attachment Hole</span>
+                                            <label for="attach_hole">Attachment Hole</label>
                                             @endif
 
 
