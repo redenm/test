@@ -279,7 +279,7 @@
                                             @endfor
         
                                            {{-- <span class="count">({{ round($avg) == 0 ? '0' : number_format($avg,1)}})</span> --}}
-                                           <span class="count">({{$count}})</span>
+                                           <span class="count" style="color: #000">({{$count}})</span>
                                         </p>
                                         <span style="font-size: 13px;">Review this item</span>
                                     </a>
@@ -652,10 +652,10 @@
                                     @endif
                                     <div class="row mt-5 product__details__content__options-item">
                                         <div class="col-md-6 col-sm-6">
-                                            <span class="quantity">Quantity</span>
+                                            <label for="product_quantity" class="quantity">Quantity</label>
                                             <div class="number">
                                                 <button onclick="return false;" class="minus symbol"> - </button>
-                                                <input type="text" name="product_quantity" value="1" class="quantity-number">
+                                                <input id="product_quantity" type="text" name="product_quantity" value="1" class="quantity-number">
                                                 <button onclick="return false;" class="plus symbol"> + </button>
                                             </div>
                                             @if($product_details->to_inventory == 1)
@@ -682,7 +682,7 @@
                                             @else
                                             <input type="hidden" name="gen_weight" value="{{$product_details->weight}}">
 
-                                            <button id="_btn_add_to_cart" type="submit" class="btn  btn--main btn--addtocart _btn_add_to_cart">Add to Cart</button>
+                                            <button id="_btn_add_to_cart" type="submit" class="btn  btn--main btn--addtocart _btn_add_to_cart" style="background-color: #78603c;">Add to Cart</button>
                                             @endif
                                         </div>
                                     </div>
