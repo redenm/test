@@ -1,0 +1,1322 @@
+@extends('front.layouts.base')
+<style>
+    .select-option-has-error{
+        border: 1px solid #ff5454;
+    }
+</style>
+@section('content')
+    @php
+        session()->forget('redirect_product_link');
+        $get_customer_feedback = \App\Models\CustomerFeedback::where('product_id',$product_details->id)->where('is_active',1)->orderBy('id','desc')->get();
+        $check_harness = 0;
+    @endphp
+<section class="page page--product-detail page--product-detail-inner"  onload="countLines();">
+    @include('front.layouts.sections.header')
+    {{-- @include('front.pages.custom-page.sections.sub-banner', ['has_search' => true]) --}}
+    <main class="content" style="margin-top: 113px;">
+        {{-- individual section  --}}
+        {{-- Product Details Section --}}
+        <section class="product__details bg" data-aos="fade">
+            <div class="container __1525">
+                <div class="row">
+                    <div class="col-sm-6 product__details__gallery" >
+                        @include('front.pages.custom-page.sections.breadcrumb')
+                        <div class="product__details__slider--main">
+                            <div class="product__img">
+                                @if ($product_details->image == '' || $product_details->image == null)
+                                    @if(count($image_gallery) > 0)
+                                        @foreach ($image_gallery as $count => $image_disp)
+                                            @if($loop->first)
+                                                <a href="{{asset(''.$image_disp->image.'')}}">
+                                                    <img src="{{asset(''.$image_disp->image.'')}}" alt="{{alt_tag($image_disp->image)}}">
+                                                </a>
+                                            @endif
+                                        @endforeach
+                                    @else
+                                        <a href="{{asset('public/uploads/product_image_placeholder/placeholder-img.png')}}">
+                                            <img src="{{asset('public/uploads/product_image_placeholder/placeholder-img.png')}}" alt="HankeysToys Product">
+                                        </a> 
+                                    @endif
+                                @else
+                                    <a href="{{asset(''.$product_details->image.'')}}">
+                                        <img src="{{asset(''.$product_details->image.'')}}" alt="{{alt_tag($product_details->image)}}">
+                                    </a>
+                                @endif
+                            </div>
+                            @if (count($image_gallery) == 0)
+                                <div class="product__img">
+                                    <a href="{{asset('public/uploads/product_image_placeholder/placeholder-img.png')}}">
+                                        <img src="{{asset('public/uploads/product_image_placeholder/placeholder-img.png')}}" alt="HankeysToys Product">
+                                    </a>
+                                </div>
+                            @else
+                                @foreach ($image_gallery as $images)
+                                    <div class="product__img">
+                                        <a href="{{asset(''.$images->image.'')}}">
+                                            <img src="{{asset(''.$images->image.'')}}" alt="{{alt_tag($images->image)}}">
+                                        </a>
+                                    </div>
+                                @endforeach
+                            @endif
+
+{{-- 
+                            <div class="product__img">
+                                <a href="{{asset('public/img/product/beefcake-2.jpg')}}">
+                                    <img src="{{asset('public/img/product/beefcake-2.jpg')}}" alt="">
+                                </a>
+                            </div>
+                            <div class="product__img">
+                                <a href="{{asset('public/img/product/beefcake-3.jpg')}}">
+                                    <img src="{{asset('public/img/product/beefcake-3.jpg')}}" alt="">
+                                </a>
+                            </div>
+                            <div class="product__img">
+                                <a href="{{asset('public/img/product/beefcake-4.jpg')}}">
+                                    <img src="{{asset('public/img/product/beefcake-4.jpg')}}" alt="">
+                                </a>
+                            </div>
+                            <div class="product__img">
+                                <a href="{{asset('public/img/product/beefcake-5.jpg')}}">
+                                    <img src="{{asset('public/img/product/beefcake-5.jpg')}}" alt="">
+                                </a>
+                            </div>
+                            <div class="product__img">
+                                <a href="{{asset('public/img/product/beefcake-6.jpg')}}">
+                                    <img src="{{asset('public/img/product/beefcake-6.jpg')}}" alt="">
+                                </a>
+                            </div>
+                            <div class="product__img">
+                                <a href="{{asset('public/img/product/beefcake-7.jpg')}}">
+                                    <img src="{{asset('public/img/product/beefcake-7.jpg')}}" alt="">
+                                </a>
+                            </div>
+                            <div class="product__img">
+                                <a href="{{asset('public/img/product/beefcake-8.jpg')}}">
+                                    <img src="{{asset('public/img/product/beefcake-8.jpg')}}" alt="">
+                                </a>
+                            </div> --}}
+
+                        </div>
+                        <div class="product__details__slider--thumbnail">
+                            @if ($product_details->image == '' || $product_details->image == null)
+
+                            @if(count($image_gallery) > 0)
+                                {{-- @foreach ($image_gallery as $count => $image_disp)
+                                    @if($loop->first)
+
+                                        <div class="thumbnail-item">
+                                            <img src="{{asset(''.$image_disp->image.'')}}" alt="">
+                                        </div>
+
+                              
+                                    @endif
+                                @endforeach --}}
+                            @else
+                            
+                                <div class="thumbnail-item">
+                                    <img src="{{asset('public/uploads/product_image_placeholder/placeholder-img.png')}}" alt="HankeysToys Product">
+                                </div>
+                                {{-- <a href="{{asset('public/uploads/product_image_placeholder/placeholder-img.png')}}">
+                                    <img src="{{asset('public/uploads/product_image_placeholder/placeholder-img.png')}}" alt="">
+                                </a>  --}}
+                            @endif
+
+                            @else
+                                <div class="thumbnail-item">
+                                    <img src="{{asset(''.$product_details->image.'')}}" alt="{{alt_tag($product_details->image)}}">
+                                </div>
+                            @endif
+
+
+                            @if (count($image_gallery) == 0)
+                                {{-- <div class="thumbnail-item">
+                                    <img src="{{asset('public/uploads/product_image_placeholder/placeholder-img.png')}}" alt="">
+                                </div>
+                                <div class="thumbnail-item">
+                                    <img src="{{asset('public/uploads/product_image_placeholder/placeholder-img.png')}}" alt="">
+                                </div>
+                                <div class="thumbnail-item">
+                                    <img src="{{asset('public/uploads/product_image_placeholder/placeholder-img.png')}}" alt="">
+                                </div> --}}
+                            @else
+                            @foreach ($image_gallery as $images)
+                                <div class="thumbnail-item">
+                                    <img src="{{asset(''.$images->image.'')}}" alt="{{alt_tag($images->image)}}">
+                                </div>
+                            @endforeach
+                                
+                            @endif
+
+                            {{-- <div class="thumbnail-item">
+                                <img src="{{asset('public/img/product/beefcake-2.jpg')}}" alt="">
+                            </div>
+                            <div class="thumbnail-item">
+                                <img src="{{asset('public/img/product/beefcake-3.jpg')}}" alt="">
+                            </div>
+                            <div class="thumbnail-item">
+                                <img src="{{asset('public/img/product/beefcake-4.jpg')}}" alt="">
+                            </div>
+
+                            <div class="thumbnail-item">
+                                <img src="{{asset('public/img/product/beefcake-5.jpg')}}" alt="">
+                            </div>
+                            <div class="thumbnail-item">
+                                <img src="{{asset('public/img/product/beefcake-6.jpg')}}" alt="">
+                            </div>
+                            <div class="thumbnail-item">
+                                <img src="{{asset('public/img/product/beefcake-7.jpg')}}" alt="">
+                            </div>
+                            <div class="thumbnail-item">
+                                <img src="{{asset('public/img/product/beefcake-8.jpg')}}" alt="">
+                            </div> --}}
+
+                        </div>
+                    </div>
+                    <div class="col-sm-6 product__details__info" >
+                        <div class="product__details__content">
+                            {{  Form::open([
+                                'method' => 'POST',
+                                'id' => 'add-product-to-cart',
+                                'route' => ['carts.store'],
+                                /*'class' => 'qty-price add-product-to-cart',
+                                'files' => TRUE*/
+                                ])
+                            }}
+
+                                {{-- Product ID --}}
+                                <input type="hidden" name="product_id" value="{{$product_details->id}}">
+                                <h1>{{$product_details->name}}</h1>
+
+                    
+                                {{-- <p class="price">$125.00</p> --}}       
+
+                                @if($product_details->to_inventory == 1 && $product_details->id == 87 && $product_details->multi_stock == 1)
+                                    @foreach ($product_details->product_option_order_cf() as $color_firm_options)
+                                        @if ($color_firm_options->selection_name == 'Color/Firmness')
+                                            @if($color_firm_options->option_name == 'item_harness')
+                                                    @php
+                                                            $check_harness = $color_firm_options->stock <= 0 ? 0 : $color_firm_options->stock;
+                                                    @endphp
+
+                                            @endif
+                                        @endif
+                                    @endforeach
+                                @endif
+
+
+                                @if($product_details->to_inventory == 1 && $product_details->stock <= 0)
+                                    <input type="text" value="Not available" style="border: none; background: none; font-style: italic; color: red; font-weight: bold;" readonly>
+                                @elseif($product_details->to_inventory == 1 && $product_details->id == 87 && $product_details->multi_stock == 1 && $check_harness == 0)
+                                    <input type="text" value="Not available" style="border: none; background: none; font-style: italic; color: red; font-weight: bold;" readonly>
+                                @else 
+                                
+                                    @if($product_details->featured == 1)
+                                    <small>$<del><span class="feature_price">{{$product_details->price}}</span></del> featured item 15% off!</small><br>
+                                    <div>
+
+                                    $<input style="max-width: 150px !important;" type="text" name="product_price" value="{{ number_format($product_details->price - (($product_details->price)*0.15), 2, '.', '') }}" data-feature="{{$product_details->featured == 1 ? '1' : '0'}}" class="price" readonly>
+                                    @elseif($product_details->is_sale == 1)
+                                    <small>$<del><span class="feature_price">{{$product_details->price}}</span></del> cyber monday deals!</small><br>
+                                    <div>
+                                    <input style="max-width: 150px !important;" type="hidden" id="sale_percent_cyber" name="sale_percent_cyber" value="{{$product_details->sale_percent}}">
+                                    $<input type="text" name="product_price" value="{{ number_format($product_details->price - (($product_details->price)*($product_details->sale_percent / 100)), 2, '.', '') }}" data-sale="{{$product_details->is_sale == 1 ? '1' : '0'}}" class="price" readonly>
+                                    @else
+                                    <div>
+                                    $<input style="max-width: 150px !important;" type="text" name="product_price" value="{{$product_details->price}}" data-feature="{{$product_details->featured == 1 ? '1' : '0'}}" class="price" readonly>
+                                    @endif
+
+                                    <input type="hidden" class="orig_price" value="{{$product_details->price}}">
+
+                                @endif
+                                    <a href="#view-specification" style="margin-right: 30px;" id="click_star" class="review_this_item">
+                                        <p class="star-rating">
+                                            @php
+                                                $total = 0;
+                                                $count = 0;
+                                                $avg = 0;
+                                                if(count($get_customer_feedback) != 0)
+                                                {
+                                                   foreach ($get_customer_feedback as $rate)
+                                                       {
+                                                        try {
+                                                            $total += $rate->ratings;
+                                                        } catch (\Throwable $th) {
+                                                            $total += 0;
+                                                        }
+                                                           
+                                                           $count++;
+                                                       }
+                                                   $avg = $total/$count;
+                                                }
+                                                $get_avg = explode('.',number_format($avg,1));
+                                            @endphp
+        
+                                            @for ($i = 0; $i < $get_avg[0]; $i++)
+                                                @if ($i < $get_avg[0] )
+                                                    <i class="fa fa-star"></i>
+                                                @else
+                                                    <i class="fa fa-star" style="color: #ccc"></i>
+                                                @endif
+                                            @endfor
+                                            @if($get_avg[1] != 0)
+                                                <i class="fa fa-star _{{$get_avg[1]}}" style="color: #ccc"></i>
+                                                @php
+                                                    $i++;
+                                                @endphp
+                                            @endif
+                                            @for($i; $i<5; $i++)
+                                                <i class="fa fa-star" style="color: #ccc"></i>
+                                            @endfor
+        
+                                           {{-- <span class="count">({{ round($avg) == 0 ? '0' : number_format($avg,1)}})</span> --}}
+                                           <span class="count">({{$count}})</span>
+                                        </p>
+                                        <span style="font-size: 13px;">Review this item</span>
+                                    </a>
+                                    <button type="reset"  name="" class="add_to_favorite {{--active--}} {{in_array($product_details->id,$array_prods_fav) ? 'active' : ''}} " style="display: inline-block !important;" product_id="{{$product_details->id}}" id="">
+                                        <i class="far fa-heart"></i>
+                                        {{-- If not Added --}}
+                                        <span> {{in_array($product_details->id,$array_prods_fav) ? 'Remove to Favorites' : 'Add to Favorites'}} </span>
+                                        {{-- If added --}}
+                                        {{-- <span>Added to Favorite</span> --}}
+                                    </button>
+                                </div>
+              
+                    
+                                <p class="product-description" id="contentProductDescription">{!!$product_details->description!!}</p>
+                                <div class="btnContainer">
+                                    <b class="btnReadMore">Read More</b>
+                                </div>
+                                <div class="product__details__content__options">
+
+                                    {{-- size --}}
+                                    <div id="size_div" class="row product__details__content__options-item">
+                                        <div class="col-md-5 col-sm-6">
+
+                                            
+                                            @if ($product_details->slug == 'add-custom-marble-color-option')
+                                            <span>Metallic</span>
+                                            @elseif ($product_details->id == 55)
+                                            <span>Size/Model</span>
+                                            @else
+                                            <span>Size</span>
+                                            @endif
+
+                                        </div>
+                                        <div class="col-md-7 col-sm-6">
+                                            <div class="form-group select">
+                                                <select name="size" id="size" class="form-control__select" style=" {{$errors->has('size') ? 'border: 1px solid #ff5454;' : ''}} ">
+                                                    {{-- <option value="">Select</option> --}}
+                                                    @php
+                                                    $check = 0;
+                                                    $done = 'no';
+                                                    @endphp
+                                                    @foreach ($product_details->product_options as $color_firm_options)
+
+                                                        @if ($color_firm_options->selection_name == 'Size')
+                                                        @php
+                                                        $check = 1;
+                                                        if ($check == 1 && $done == 'no') {
+                                                            echo '<option value="">Select</option>';
+                                                            $done = 'yes';
+                                                        }
+                                                        @endphp
+
+                                                            @if($product_details->to_inventory == 1)
+
+                                                                @if($product_details->multi_stock == 1)
+                                                                    {{-- @if ($product_details->id == 28 || $product_details->id == 84)                                                           --}}
+                                                                    {{-- <option {{old('size') == $color_firm_options->option_name.'_'.$color_firm_options->added_price ? 'selected' : '' }} value="{{$color_firm_options->option_name}}_{{$color_firm_options->added_price}}_{{$color_firm_options->weight == '' ? '0' : $color_firm_options->weight}}" {{$color_firm_options->stock == 0 ? 'disabled' : ''}}>{{$color_firm_options->option_name}}{{$color_firm_options->added_price != 0 ? ' ($'.$color_firm_options->added_price.')' : ''}} <small>(available: {{$color_firm_options->stock}})</small></option> --}}
+                                                                    {{-- @else --}}
+                                                                        @if ($product_details->id == 36 && $color_firm_options->option_name == 'MEDIUM')  
+                                                                        <option {{old('size') == $color_firm_options->option_name.'_'.$color_firm_options->added_price ? 'selected' : '' }} value="{{$color_firm_options->option_name}}_{{$color_firm_options->added_price}}_{{$color_firm_options->weight == '' ? '0' : $color_firm_options->weight}}">{{$color_firm_options->option_name.' (ORIGINAL)'}}{{$color_firm_options->added_price != 0 ? ' ($'.$color_firm_options->added_price.')' : ''}}</option>                                                                      
+                                                                        @else
+                                                                        <option {{old('size') == $color_firm_options->option_name.'_'.$color_firm_options->added_price ? 'selected' : '' }} value="{{$color_firm_options->option_name}}_{{$color_firm_options->added_price}}_{{$color_firm_options->weight == '' ? '0' : $color_firm_options->weight}}" {{$color_firm_options->stock <= 0 ? 'disabled' : ''}}>{{$color_firm_options->option_name}}{{$color_firm_options->added_price != 0 ? ' ($'.$color_firm_options->added_price.')' : ''}} <small>(available: {{$color_firm_options->stock <= 0 ? 0 : $color_firm_options->stock}})</small></option>
+                                                                        @endif
+                                                                    {{-- @endif --}}
+                                                                @else
+                                                                    @if ($product_details->id == 36 && $color_firm_options->option_name == 'MEDIUM')  
+                                                                    <option {{old('size') == $color_firm_options->option_name.'_'.$color_firm_options->added_price ? 'selected' : '' }} value="{{$color_firm_options->option_name}}_{{$color_firm_options->added_price}}_{{$color_firm_options->weight == '' ? '0' : $color_firm_options->weight}}">{{$color_firm_options->option_name.' (ORIGINAL)'}}{{$color_firm_options->added_price != 0 ? ' ($'.$color_firm_options->added_price.')' : ''}}</option>
+                                                                    @else
+                                                                    <option {{old('size') == $color_firm_options->option_name.'_'.$color_firm_options->added_price ? 'selected' : '' }} value="{{$color_firm_options->option_name}}_{{$color_firm_options->added_price}}_{{$color_firm_options->weight == '' ? '0' : $color_firm_options->weight}}">{{$color_firm_options->option_name}}{{$color_firm_options->added_price != 0 ? ' ($'.$color_firm_options->added_price.')' : ''}}</option>
+                                                                    @endif
+                                                                @endif
+
+                                                            @else
+                                                            @if ($product_details->id == 36 && $color_firm_options->option_name == 'MEDIUM')  
+                                                            <option {{old('size') == $color_firm_options->option_name.'_'.$color_firm_options->added_price ? 'selected' : '' }} value="{{$color_firm_options->option_name}}_{{$color_firm_options->added_price}}_{{$color_firm_options->weight == '' ? '0' : $color_firm_options->weight}}">{{$color_firm_options->option_name.' (ORIGINAL)'}}{{$color_firm_options->added_price != 0 ? ' ($'.$color_firm_options->added_price.')' : ''}}</option>
+                                                            @else
+                                                            <option {{old('size') == $color_firm_options->option_name.'_'.$color_firm_options->added_price ? 'selected' : '' }} value="{{$color_firm_options->option_name}}_{{$color_firm_options->added_price}}_{{$color_firm_options->weight == '' ? '0' : $color_firm_options->weight}}">{{$color_firm_options->option_name}}{{$color_firm_options->added_price != 0 ? ' ($'.$color_firm_options->added_price.')' : ''}}</option>
+                                                            @endif
+                                                            @endif
+
+                                                        @endif
+                                                    @endforeach
+                                                    <script>
+                                                        var size_hide = false;
+                                                    </script>
+                                                    @if ($check == 0)
+                                                    <option value="nodata">No available option</option>
+                                                    <script>
+                                                        var size_hide = true;
+                                                    </script>
+                                                    @endif
+                                                    {{-- <option value="SMALL/MEDIUM">SMALL/MEDIUM</option>
+                                                    <option value="LARGE">LARGE (+$25.00)</option>
+                                                    <option value="XXL">XXL (+$65.00)</option>
+                                                    <option value="4XL">4XL (+$105.00)</option> --}}
+
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {{-- firm --}}
+                                    <div id="firm_div" class="row product__details__content__options-item">
+                                        <div class="col-md-5 col-sm-6">
+                                            
+                             
+                                        <span>Firmness</span>
+                                            
+
+                                        </div>
+                                        <div class="col-md-7 col-sm-6">
+                                            <div class="form-group select">
+                                                <select name="firm" id="firm" class="form-control__select" style=" {{$errors->has('firm') ? 'border: 1px solid #ff5454;' : ''}} ">
+                                                    @php
+                                                        $check = 0;
+                                                        $done = 'no';
+                                                    @endphp
+                                                    @foreach ($product_details->product_option_order_cf() as $firm_options)
+                                                        @if ($firm_options->selection_name == 'Firmness')
+                                                            @php
+                                                                $check = 1;
+                                                                if ($check == 1 && $done == 'no') {
+                                                                    echo '<option value="">Select</option>';
+                                                                    $done = 'yes';
+                                                                }
+                                                            @endphp
+                                                            
+                                                            @if($product_details->to_inventory == 1 && $product_details->is_sale != 1)
+                                                                @if($product_details->multi_stock == 1)
+                                                                   {{-- @if ($product_details->id == 87) --}}
+                                                                   <option {{old('firm') == $firm_options->option_name.'_'.$firm_options->added_price ? 'selected' : '' }} value="{{$firm_options->option_name}}_{{$firm_options->added_price}}" {{$firm_options->stock == 0 ? 'disabled' : ''}}>{{$firm_options->option_name}}{{$firm_options->added_price != 0 ? ' ($'.$firm_options->added_price.')' : ''}} <small>(available: {{$firm_options->stock}})</small></option>
+                                                                   {{-- @else
+                                                                    <option {{old('firm') == $firm_options->option_name.'_'.$firm_options->added_price ? 'selected' : '' }} value="{{$firm_options->option_name}}_{{$firm_options->added_price}}">{{$firm_options->option_name}}{{$firm_options->added_price != 0 ? ' ($'.$firm_options->added_price.')' : ''}}</option>
+                                                                   @endif --}}
+                                                                @else
+                                                                    <option {{old('firm') == $firm_options->option_name.'_'.$firm_options->added_price ? 'selected' : '' }} value="{{$firm_options->option_name}}_{{$firm_options->added_price}}">{{$firm_options->option_name}}{{$firm_options->added_price != 0 ? ' ($'.$firm_options->added_price.')' : ''}}</option>
+                                                                @endif
+                                                            @else
+
+                                                                @if ($product_details->is_sale == 1 && $product_details->sale_only_firm != 'any')
+
+                                                                    @if($product_details->sale_only_firm == $firm_options->option_name)
+                                                                    
+                                                                    <option {{old('firm') == $firm_options->option_name.'_'.$firm_options->added_price ? 'selected' : '' }} value="{{$firm_options->option_name}}_{{$firm_options->added_price}}">{{$firm_options->option_name}}{{$firm_options->added_price != 0 ? ' ($'.$firm_options->added_price.')' : ''}}</option>
+
+                                                                    @endif
+
+                                                                @else
+                                                                
+                                                                <option {{old('firm') == $firm_options->option_name.'_'.$firm_options->added_price ? 'selected' : '' }} value="{{$firm_options->option_name}}_{{$firm_options->added_price}}">{{$firm_options->option_name}}{{$firm_options->added_price != 0 ? ' ($'.$firm_options->added_price.')' : ''}}</option>
+                                                            
+                                                                @endif
+
+                                                            @endif
+
+                                                        @endif
+                                                    @endforeach
+                                                    <script>
+                                                        var firm_hide = false;
+                                                    </script>
+                                                    @if ($check == 0)
+                                                    <option value="nodata">No available option</option>
+                                                    <script>
+                                                        var firm_hide = true;
+                                                    </script>
+                                                    @endif
+
+                                                    {{-- <option value="Med Firm Natural Tan">Med Firm Natural Tan</option>
+                                                    <option value="Med Firm Deep Brown">Med Firm Deep Brown</option>
+                                                    <option value="Med Firm Black">Med Firm Black</option>
+                                                    <option value="75% Soft Natural Tan">75% Soft Natural Tan</option>
+                                                    <option value="75% Soft Deep Brown">75% Soft Deep Brown</option>
+                                                    <option value="75% Soft Black">75% Soft Black</option> --}}
+                                                    
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {{-- color --}}
+                                    <div id="color_firm_div" class="row product__details__content__options-item">
+                                        <div class="col-md-5 col-sm-6">
+                                            
+                                            @if ($product_details->id == 87)
+                                            <span>Additional Ring</span>
+                                            @elseif ($product_details->slug == 'add-custom-solid-color-options')
+                                            <span>Solid Color option</span>
+                                            @elseif ($product_details->slug == 'add-custom-marble-color-option')
+                                            <span>Color option 1</span>
+                                            @elseif ($product_details->slug == 'add-custom-firmness-option')
+                                            <span>Firmness</span>
+                                            @else
+                                            <span>Color</span>
+                                            @endif
+
+                                        </div>
+                                        <div class="col-md-7 col-sm-6">
+                                            <div class="form-group select">
+                                                <select name="color_firm" id="color_firm" class="form-control__select" style=" {{$errors->has('color_firm') ? 'border: 1px solid #ff5454;' : ''}} ">
+                                                    @php
+                                                        $check = 0;
+                                                        $done = 'no';
+                                                    @endphp
+                                                    @foreach ($product_details->product_option_order_cf() as $color_firm_options)
+                                                        @if ($color_firm_options->selection_name == 'Color/Firmness')
+                                                            @php
+                                                                $check = 1;
+                                                                if ($check == 1 && $done == 'no') {
+                                                                    echo '<option value="">Select</option>';
+                                                                    $done = 'yes';
+                                                                }
+                                                            @endphp
+                                                            
+                                                            @if($product_details->to_inventory == 1 && $product_details->is_sale != 1)
+                                                                @if($product_details->multi_stock == 1)
+                                                                   @if ($color_firm_options->option_name != 'item_harness' )
+                                                                      <option {{old('color_firm') == $color_firm_options->option_name.'_'.$color_firm_options->added_price ? 'selected' : '' }} value="{{$color_firm_options->option_name}}_{{$color_firm_options->added_price}}" {{$color_firm_options->stock == 0 ? 'disabled' : ''}}>{{$color_firm_options->option_name}}{{$color_firm_options->added_price != 0 ? ' ($'.$color_firm_options->added_price.')' : ''}} <small>(available: {{$color_firm_options->stock}})</small></option>
+                                                                   @endif
+                                                              
+                                                                   {{-- @else
+                                                                    <option {{old('color_firm') == $color_firm_options->option_name.'_'.$color_firm_options->added_price ? 'selected' : '' }} value="{{$color_firm_options->option_name}}_{{$color_firm_options->added_price}}">{{$color_firm_options->option_name}}{{$color_firm_options->added_price != 0 ? ' ($'.$color_firm_options->added_price.')' : ''}}</option>
+                                                                   @endif --}}
+                                                                @else
+                                                                    @if ($color_firm_options->option_name != 'item_harness' )
+                                                                        <option {{old('color_firm') == $color_firm_options->option_name.'_'.$color_firm_options->added_price ? 'selected' : '' }} value="{{$color_firm_options->option_name}}_{{$color_firm_options->added_price}}">{{$color_firm_options->option_name}}{{$color_firm_options->added_price != 0 ? ' ($'.$color_firm_options->added_price.')' : ''}}</option>
+                                                                    @endif    
+                                                                @endif
+                                                            @else
+
+                                                                @if ($product_details->is_sale == 1 && $product_details->sale_only_color_firm != 'any')
+
+                                                                    @if($product_details->sale_only_color_firm == $color_firm_options->option_name)
+                                                                    
+                                                                    <option {{old('color_firm') == $color_firm_options->option_name.'_'.$color_firm_options->added_price ? 'selected' : '' }} value="{{$color_firm_options->option_name}}_{{$color_firm_options->added_price}}">{{$color_firm_options->option_name}}{{$color_firm_options->added_price != 0 ? ' ($'.$color_firm_options->added_price.')' : ''}}</option>
+
+                                                                    @endif
+
+                                                                @else
+                                                                
+                                                                <option {{old('color_firm') == $color_firm_options->option_name.'_'.$color_firm_options->added_price ? 'selected' : '' }} value="{{$color_firm_options->option_name}}_{{$color_firm_options->added_price}}">{{$color_firm_options->option_name}}{{$color_firm_options->added_price != 0 ? ' ($'.$color_firm_options->added_price.')' : ''}}</option>
+                                                            
+                                                                @endif
+
+                                                            @endif
+
+                                                        @endif
+                                                    @endforeach
+                                                    <script>
+                                                        var color_firm_hide = false;
+                                                    </script>
+                                                    @if ($check == 0)
+                                                    <option value="nodata">No available option</option>
+                                                    <script>
+                                                        var color_firm_hide = true;
+                                                    </script>
+                                                    @endif
+
+                                                    {{-- <option value="Med Firm Natural Tan">Med Firm Natural Tan</option>
+                                                    <option value="Med Firm Deep Brown">Med Firm Deep Brown</option>
+                                                    <option value="Med Firm Black">Med Firm Black</option>
+                                                    <option value="75% Soft Natural Tan">75% Soft Natural Tan</option>
+                                                    <option value="75% Soft Deep Brown">75% Soft Deep Brown</option>
+                                                    <option value="75% Soft Black">75% Soft Black</option> --}}
+                                                    
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {{-- attach --}}
+                                    <div id="attach_hole_div" class="row product__details__content__options-item">
+                                        <div class="col-md-5 col-sm-6">
+                                            @if ($product_details->slug == 'add-custom-solid-color-option')
+                                            <span>Metallic</span>
+                                            @elseif ($product_details->slug == 'add-custom-marble-color-option')
+                                            <span>Color option 2</span>
+                                            @elseif ($product_details->id == 87)
+                                            <span>Additional Ring</span>
+                                            @else
+                                            <span>Attachment Hole</span>
+                                            @endif
+
+
+                                        </div>
+                                        <div class="col-md-7 col-sm-6">
+                                            <div class="form-group select">
+                                                <select name="attach_hole" id="attach_hole" class="form-control__select" style=" {{$errors->has('attach_hole') ? 'border: 1px solid #ff5454;' : ''}} " >
+                                                    @php
+                                                    $check = 0;
+                                                    $done = 'no';
+                                                    @endphp
+                                                    {{-- <option value="">Select</option> --}}
+
+                                                    @foreach ($product_details->product_option_order_cf() as $color_firm_options)
+
+                                                        @if ($color_firm_options->selection_name == 'Attachment Hole')
+                                                            @php
+                                                            $check = 1;
+                                                            if ($check == 1 && $done == 'no') {
+                                                                echo '<option value="">Select</option>';
+                                                                $done = 'yes';
+                                                            }
+                                                            @endphp
+
+
+                                                            @if($product_details->to_inventory == 1 && $product_details->is_sale != 1)
+                                                                @if($product_details->multi_stock == 1)
+                                                                    @if ($color_firm_options->option_name != 'item_harness' )
+                                                                        <option {{old('attach_hole') == $color_firm_options->option_name.'_'.$color_firm_options->added_price ? 'selected' : '' }} value="{{$color_firm_options->option_name}}_{{$color_firm_options->added_price}}" {{$color_firm_options->stock == 0 ? 'disabled' : ''}}>{{$color_firm_options->option_name}}{{$color_firm_options->added_price != 0 ? ' ($'.$color_firm_options->added_price.')' : ''}} <small>(available: {{$color_firm_options->stock}})</small></option>
+                                                                    @endif
+
+                                                                    {{-- @else
+                                                                        <option {{old('color_firm') == $color_firm_options->option_name.'_'.$color_firm_options->added_price ? 'selected' : '' }} value="{{$color_firm_options->option_name}}_{{$color_firm_options->added_price}}">{{$color_firm_options->option_name}}{{$color_firm_options->added_price != 0 ? ' ($'.$color_firm_options->added_price.')' : ''}}</option>
+                                                                    @endif --}}
+                                                                    @else
+                                                                        <option {{old('attach_hole') == $color_firm_options->option_name.'_'.$color_firm_options->added_price ? 'selected' : '' }} value="{{$color_firm_options->option_name}}_{{$color_firm_options->added_price}}">{{$color_firm_options->option_name}}{{$color_firm_options->added_price != 0 ? ' ($'.$color_firm_options->added_price.')' : ''}}</option>
+                                                                    @endif
+                                                                    @else
+
+                                                                    @if ($product_details->is_sale == 1 && $product_details->sale_only_attachment != 'any')
+
+                                                                        @if($product_details->sale_only_attachment == $color_firm_options->option_name)
+                                                                        
+                                                                        <option {{old('attach_hole') == $color_firm_options->option_name.'_'.$color_firm_options->added_price ? 'selected' : '' }} value="{{$color_firm_options->option_name}}_{{$color_firm_options->added_price}}">{{$color_firm_options->option_name}}{{$color_firm_options->added_price != 0 ? ' ($'.$color_firm_options->added_price.')' : ''}}</option>
+
+                                                                        @endif
+
+                                                                    @else
+
+                                                                    <option {{old('attach_hole') == $color_firm_options->option_name.'_'.$color_firm_options->added_price ? 'selected' : '' }} value="{{$color_firm_options->option_name}}_{{$color_firm_options->added_price}}">{{$color_firm_options->option_name}}{{$color_firm_options->added_price != 0 ? ' ($'.$color_firm_options->added_price.')' : ''}}</option>
+
+                                                                @endif
+
+                                                            @endif
+
+
+                                                            {{-- @if ($product_details->is_sale == 1 && $product_details->sale_only_attachment != 'any')
+
+                                                                @if($product_details->sale_only_attachment == $color_firm_options->option_name)
+                                                                    <option {{old('attach_hole') == $color_firm_options->option_name.'_'.$color_firm_options->added_price ? 'selected' : '' }} value="{{$color_firm_options->option_name}}_{{$color_firm_options->added_price}}">{{$color_firm_options->option_name}}{{$color_firm_options->added_price != 0 ? ' ($'.$color_firm_options->added_price.')' : ''}}</option>
+                                                                @endif
+
+                                                            @else
+                                                                <option {{old('attach_hole') == $color_firm_options->option_name.'_'.$color_firm_options->added_price ? 'selected' : '' }} value="{{$color_firm_options->option_name}}_{{$color_firm_options->added_price}}">{{$color_firm_options->option_name}}{{$color_firm_options->added_price != 0 ? ' ($'.$color_firm_options->added_price.')' : ''}}</option>
+                                                            @endif --}}
+
+                                                        @endif
+
+                                                    @endforeach
+                                                    <script>
+                                                        var attach_hole_hide = false;
+                                                    </script>
+                                                    @if ($check == 0)
+                                                    <option value="nodata">No available option</option>
+                                                    <script>
+                                                        var attach_hole_hide = true;
+                                                    </script>
+                                                    @endif
+                                                    {{-- <option value="Add Vac-U-Hole">Add Vac-U-Hole (+$4.95)</option>
+                                                    <option value="No Vac-U-Hole">No Vac-U-Hole</option> --}}
+
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                
+
+                                    @if($errors->has('size') || $errors->has('attach_hole') || $errors->has('color_firm'))
+                                    <span style="color: red; float: right; margin-right: 15px; margin-top: 5px;" class="help-block animation-slideDown">Please specify your options</span>
+                                    @endif
+                                    <div class="row mt-5 product__details__content__options-item">
+                                        <div class="col-md-6 col-sm-6">
+                                            <span class="quantity">Quantity</span>
+                                            <div class="number">
+                                                <button onclick="return false;" class="minus symbol"> - </button>
+                                                <input type="text" name="product_quantity" value="1" class="quantity-number">
+                                                <button onclick="return false;" class="plus symbol"> + </button>
+                                            </div>
+                                            @if($product_details->to_inventory == 1)
+
+                                                @if($product_details->id == 87 && $product_details->multi_stock == 1)
+                                                <span class="quantity">Harness available: </span>
+                                                    <div class="number">
+                                                        {{$check_harness}}
+                                                    </div>
+                                                @else
+                                                <span class="quantity">Stock available: </span>
+                                                    <div class="number">
+                                                        {{$product_details->stock <= 0 ? 0 : $product_details->stock }}
+                                                    </div>
+                                                @endif
+                                            @endif
+                                        </div>
+                                        <div class="col-md-6 col-sm-6 qty-price__item__addcart">
+                                            
+                                            @if($product_details->to_inventory == 1 && $product_details->stock <= 0)
+                                            <a class="btn  btn--main btn--addtocart">Out of Stock</a>
+                                            @elseif($product_details->id == 87 && $check_harness == 0 && $product_details->multi_stock == 1)
+                                            <a class="btn  btn--main btn--addtocart">Out of Stock</a>
+                                            @else
+                                            <input type="hidden" name="gen_weight" value="{{$product_details->weight}}">
+
+                                            <button id="_btn_add_to_cart" type="submit" class="btn  btn--main btn--addtocart _btn_add_to_cart">Add to Cart</button>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+
+                                @if(count($product_details->getproduct_specs_product_sizeAttribute()))
+                                <a href="#view-specification" class="btn-product__details" style="margin-right: 60px">View Specifications</a>
+                                @endif
+
+                            {{-- @endif --}}
+                            {{ Form::close() }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        
+
+        {{-- End Product Details Section --}}
+
+
+        {{-- Product Specification and Review Section--}}
+        <section class="product__information" id="view-specification">
+            <div class="container">
+                <div class="product__information__tab">
+                    <div class="nav nav-tabs justify-content-center" role="tablist">
+                        <a class="nav-link {{count($product_details->getproduct_specs_product_sizeAttribute()) == 0 ? '' : 'active'}}" style="display: {{count($product_details->getproduct_specs_product_sizeAttribute()) == 0 ? 'none' : 'block'}}"  data-toggle="tab" role="tab" href="#specifications" aria-controls="specifications" aria-selected="true">Specifications</a>
+                        <a class="nav-link {{count($product_details->getproduct_specs_product_sizeAttribute()) == 0 ? 'active' : ''}}" id="tab_reviews" data-toggle="tab" role="tab" href="#reviews" aria-controls="reviews" aria-selected="false">Reviews <span>({{count($get_customer_feedback) == 0 ? '0' : count($get_customer_feedback)}})</span></a>
+                    </div>
+                </div>
+        
+                <div class="product__information__tab-content tab-content">
+                    <div class="tab-pane fade {{count($product_details->getproduct_specs_product_sizeAttribute()) == 0 ? '' : 'show active'}}" role="tabpanel" id="specifications" aria-labelledby="specifications-tab">
+                        {{-- Product Specifications --}}
+                        <div class="product__information__tab-content__specifications">
+                            <div class="container">
+
+                                {{-- {!! $product_details->specification ?  $product_details->specification : '<h5>No available specification.</h5><hr>'!!} --}}
+                                @foreach ($product_details->getproduct_specs_product_sizeAttribute() as $index => $prod_size)
+                                    <div class="specs__item">
+                                        <h5 class="product-size">{{$prod_size->product_name_size}} </h5>
+                                        <div class="row">
+                                        @foreach ($product_details->product_specs()->where('product_name_size',$prod_size->product_name_size)->get() as $count => $item)
+
+                                            @if($item->value != '')
+                                            <div class="col-md-4 col-sm-6">
+                                                <div class="d-flex specs__item__content">
+                                                    <p class="mr-auto specs__item__name">{{$item->descipription}}: </p>
+                                                    <div class="specs__item__value">
+                                                        <p>{{$item->value}}<span>
+                                                            
+                                                            @php 
+                                                            $val = $item->value;
+
+                                                            preg_match_all('!\d+\.*\d*!', $val, $matches);
+
+                                                            $bool = false;
+
+                                                            foreach ($matches[0] as $key => $value) {
+
+                                                                if (strpos($val, $value.'"') !== false) {
+
+                                                                    $to_cm = number_format(($value*2.54),2);
+                                                                    $bool = true;
+                                                                    $val = str_replace($value.'"', $to_cm.'cm', $val);
+                                                                }
+                                                            }
+
+                                                            if($bool)
+                                                            {
+                                                                echo $val;
+                                                            }
+                                                            
+                                                            @endphp
+                                                             </span></p>
+                                                            {{-- {{$item->value}} --}}
+       
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            @endif
+                                        @endforeach
+                                        </div>
+                                    </div>
+                                @endforeach
+
+                                {{-- Note --}}
+                                <div class="row note">
+                                    <div class="col-md-12">
+
+                                        {!!$product_details->additional_specs!!}
+                                        
+                                        @if ($product_details->id == 87)
+                                        
+                                        @else
+                                        {!!\App\Models\PageSection::where('page_id',27)->where('section','content')->get()[0]->content!!}
+                                        @endif               
+                            
+{{-- 
+                                        <p><b>A NOTE ABOUT INTERNATIONAL ORDERS:</b> Customers are responsible for paying all duties and taxes for their respective countries</p>
+                                        <p><b>Return Policy:</b> Due to the nature of our products, there are no returns on orders unless defective. Please pay attention to the dimensions carefully and don't let your eyes get greedier than your hole! Contact me if you have any questions prior to placing your order.</p> --}}
+                                    
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {{-- End Product Specifications --}}
+                    </div>
+                    <div class="tab-pane fade {{count($product_details->getproduct_specs_product_sizeAttribute()) == 0 ? 'show active' : ''}} " role="tabpanel" id="reviews" aria-labelledby="reviews-tab">
+                        <div style="margin-top: -85px; margin-bottom: 35px;" class="write-a-review__container text-center">
+                            <button class="btn btn--main btn--black" id="write_rev_btn" >Write a review</button>
+                        </div>
+                        {{-- Product Review --}}
+                        <section class="customer-review">
+                            <div class="container _1260">
+                                <div class="customer-review__list">
+
+                                    @php
+                                        $get_revs = [];
+                                        if(count($get_customer_feedback) != 0)
+                                        {
+                                            $get_revs = $get_customer_feedback;
+                                        }
+                                    @endphp
+
+                                    @foreach($get_revs as $reviews)
+
+                                        <div class="row customer-review__item">
+                                            <div class="col-md-3">
+                                                <div class="star-rate">
+
+                                                    @for ($i = 0; $i < 5; $i++)
+                                                        @if ($i < $reviews->ratings )
+                                                            <i class="fa fa-star"></i>
+                                                        @else
+                                                            <i class="fa fa-star" style="color: #ccc"></i>
+                                                        @endif
+                                                    @endfor
+                                                </div>
+                                                <span class="timestamp">{{$reviews->created_at->diffForHumans()}}</span>
+                                                <span class="author">{{$reviews->name}}</span>
+                                                <p class="member-since">Member since {{$reviews->created_at->year}}</p>
+                                            </div>
+                                            <div class="col-md-9">
+                                                <h5 class="subject">{{ \Illuminate\Support\Str::limit($reviews->content, 40, '...') }}</h5>
+                                                <p class="review">{{$reviews->content}}
+                                                </p>
+                                                @if ($reviews->image != '')
+                                                    <img alt="" src="{{asset($reviews->image)}}">
+                                                @endif
+                                                @if ($reviews->ratings >= 4)
+                                                    <p class="recommend-this-product">Yes, I recommend this product.</p>
+                                                @else
+                                                @endif
+                                            </div>
+                                        </div>
+
+
+                                    @endforeach
+                                    <div class="row text-center">
+                                        <div class="col-md-12">
+                                            {{-- <button class="btn btn--loadmore">Load More</button> --}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                        {{-- End Product Review --}}
+        
+                    </div>
+                    
+                </div>
+            </div>
+        </section>
+        {{-- End Product Specification and Review Section --}}
+
+        {{-- {{$slug}} --}}
+
+        {{-- You May Also Like Section --}}
+        <section class="product__you-may-also-like text-center">
+            <h2>You May Also Like</h2>
+            <div class="you-may-also-like-slider">
+
+                @foreach ($product_details_you_may_also_like as $product)
+                    <div class="__slider-item">
+                        @php
+
+                            $slugish = \App\Models\Product::leftjoin('product_categories','product_categories.product_id','=','products.id')
+                                                        ->leftjoin('product_category_ones','product_category_ones.id','=','product_categories.category_id')
+                                                        ->select('product_category_ones.slug as cat_slug','products.slug as prod_slug')
+                                                        ->where('products.id',$product->id)
+                                                        ->first();
+
+                        @endphp
+
+                        <a href="{{url($slugish->cat_slug.'/'.$slugish->prod_slug)}}">
+                            <div class="__slider-item--img">
+
+                                @if($product->image == '' || $product->image == null)
+                                    
+                                <img src="{{asset('public/uploads/product_image_placeholder/placeholder-img.png')}}" alt="HankeysToys Product">
+                                
+                                @else
+                    
+                                <img src="{{asset(''.$product->image.'')}}" alt="{{alt_tag($product->image)}}">
+                                
+                                @endif
+
+                                {{-- <img src="{{asset('public/img/product/1.jpg')}}" alt=""> --}}
+
+                            </div>
+                            <div class="__slider-item--content">
+                                <h5>{{$product->name}}</h5>
+                                <p>${{$product->price}}</p>
+                            </div>
+                        </a>
+                    </div>
+                @endforeach
+                {{-- <div class="__slider-item">
+                    <a href="#">
+                        <div class="__slider-item--img">
+                            <img src="{{asset('public/img/product/1.jpg')}}" alt="">
+                        </div>
+                        <div class="__slider-item--content">
+                            <h5>New! Dominic Pacifico - Four Sizes</h5>
+                            <p>$129.95</p>
+                        </div>
+                    </a>
+                </div>
+                <div class="__slider-item">
+                    <a href="#">
+                        <div class="__slider-item--img">
+                            <img src="{{asset('public/img/product/2.jpg')}}" alt="">
+                        </div>
+                        <div class="__slider-item--content">
+                            <h5>New! Three Amigos - Four Sizes</h5>
+                            <p>$139.95</p>
+                        </div>
+                    </a>
+                </div>
+                <div class="__slider-item">
+                    <a href="#">
+                        <div class="__slider-item--img">
+                            <img src="{{asset('public/img/product/3.jpg')}}" alt="">
+                        </div>
+                        <div class="__slider-item--content">
+                            <h5>New! Midass Touch - Four Sizes</h5>
+                            <p>$129.95</p>
+                        </div>
+                    </a>
+                </div>
+                <div class="__slider-item">
+                    <a href="#">
+                        <div class="__slider-item--img">
+                            <img src="{{asset('public/img/product/4.jpg')}}" alt="">
+                        </div>
+                        <div class="__slider-item--content">
+                            <h5>New! Machoman - Four Sizes</h5>
+                            <p>$134.95</p>
+                        </div>
+                    </a>
+                </div>
+                <div class="__slider-item">
+                    <a href="#">
+                        <div class="__slider-item--img">
+                            <img src="{{asset('public/img/product/5.jpg')}}" alt="">
+                        </div>
+                        <div class="__slider-item--content">
+                            <h5>New! Chorizo N’ Eggs - Five Sizes</h5>
+                            <p>$124.95</p>
+                        </div>
+                    </a>
+                </div>
+                <div class="__slider-item">
+                    <a href="#">
+                        <div class="__slider-item--img">
+                            <img src="{{asset('public/img/product/5.jpg')}}" alt="">
+                        </div>
+                        <div class="__slider-item--content">
+                            <h5>New! Beefcake - Four Sizes</h5>
+                            <p>$169.95</p>
+                        </div>
+                    </a>
+                </div> --}}
+
+            </div>
+
+            {{-- Slider Progress Bar --}}
+            <div class="slider-progress-bar"  role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                <span class="progress-label sr-only"></span>
+            </div>
+        </section>
+
+        {{-- End You May Also Like Section --}}
+        
+        <!-- Modal -->
+        <div class="modal fade" id="write-review" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Write a review</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="contact__form bg">
+
+                            {{  Form::open([
+                                'method' => 'POST',
+                                 'id' => 'customer_feedback_add',
+                                'url' => ['customer_feedback_add'],
+                                // 'class' => 'form-horizontal ',
+                                'files' => TRUE
+                                ])
+                            }}
+
+
+                            <input id="id" type="hidden" id="product_id" value="{{$product_details->id}}" name="product_id">
+                            <input type="hidden" id="product_slug" value="{{$product_details->slug}}" name="product_slug">
+                            <input type="hidden" id="redirect_url" value="{{ request()->path() }}" name="redirect_url">
+
+                             {{-- <div class="form-group">
+                                <label for="email">Email <span>*</span></label>
+                                <input id="email" type="email" class="form-control " name="email">
+                            </div> --}}
+                            <div class="form-group">
+                                <label for="content">Comment <span>*</span></label>
+                                <textarea id="content" required class="form-control " name="content"></textarea>
+                            </div>
+                            {{-- <div class="form-group">
+                                <label for="image">Image</label>
+                                <input type="file" name="image">
+                            </div> --}}
+                            <div class="form-group clearfix">
+                                <label for="ratings">Rate <span>*</span></label>
+                                {{-- <input id="subject" type="text" class="form-control " name="subject"> --}}
+                                <div class="star-rate ">
+                                    <input type="radio" id="star5" name="ratings" value="5" />
+                                    <label for="star5" title="text">5 stars</label>
+                                    <input type="radio" id="star4" name="ratings" value="4" />
+                                    <label for="star4" title="text">4 stars</label>
+                                    <input type="radio" id="star3" name="ratings" value="3" />
+                                    <label for="star3" title="text">3 stars</label>
+                                    <input type="radio" id="star2" name="ratings" value="2" />
+                                    <label for="star2" title="text">2 stars</label>
+                                    <input type="radio" id="star1" name="ratings" value="1" />
+                                    <label for="star1" title="text">1 star</label>
+                                </div>
+                                <div class="clear"></div>
+                            </div>
+
+                            @auth
+                                <div class="form-group">
+                                    <label for="name">Name/Alias (Published)<span>*</span></label>
+                                    {{-- <input disabled id="name" type="text" required class="form-control" value="{{auth()->user()->first_name.' '.auth()->user()->last_name}}"> --}}
+                                    <input id="name" type="text" required class="form-control" value="{{auth()->user()->first_name.' '.auth()->user()->last_name}}" name="name">
+                                </div>
+                                <div class="form-group">
+                                    <label for="email">Email (Not Published)<span>*</span></label>
+                                    <input disabled id="email" type="email" class="form-control " value="{{auth()->user()->email}}">
+                                    <input id="email" type="hidden" class="form-control " value="{{auth()->user()->email}}" name="email">
+                                    <br>
+                                </div>
+                            @endauth
+                            @guest
+                                <div class="form-group">
+                                    <label for="name">Name/Alias (Published)<span>*</span></label>
+                                    {{-- <input disabled id="name" type="text" required class="form-control" value="{{auth()->user()->first_name.' '.auth()->user()->last_name}}"> --}}
+                                    <input id="name" type="text" required class="form-control" value="" name="name">
+                                </div>
+                                <div class="form-group">
+                                    <label for="email">Email (Not Published)<span>*</span></label>
+                                    <input id="email" type="email" class="form-control " value="" name="email">
+                                    {{-- <input id="email" type="hidden" class="form-control " value="" name="email"> --}}
+                                    <br>
+                                </div>
+                            @endguest
+                            <div class="form-group">
+                                <div class="col-xs-12 text-center">
+                                    {!! NoCaptcha::display() !!}
+                                    @if ($errors->has('g-recaptcha-response'))
+                                        <span id="g-recaptcha-response-error" style="color:red" class="help-block animation-slideDown">
+                                            {{ $errors->first('g-recaptcha-response') }}
+                                        </span>
+                                    @endif
+                                </div>
+                            </div>
+                            {{-- honeypot --}}
+                            <style>
+                                .ohnohoney{
+                                    opacity: 0;
+                                    position: absolute;
+                                    top: 0;
+                                    left: 0;
+                                    height: 0;
+                                    width: 0;
+                                    z-index: -1;
+                                }
+                            </style>
+                            <label class="ohnohoney" for="a_age"></label>
+                            <input name="a_age" id="a_age" autocomplete="off" type="text" value="{{old('a_age')}}" class="ohnohoney" placeholder="password">
+                            <span style="text-align: center;display: block;"><i>Your email will not be shared publicly</i></span>
+                            <div class="form-group">
+                                <button type="submit" class="btn btn--main btn--black">SUBMIT</button>
+                            </div>
+
+                            {{ Form::close() }}
+                            {{-- </form> --}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {{-- end Modal --}}
+
+    </main>
+    @include('front.layouts.sections.footer')
+</section>
+@endsection
+@push('extrascripts')
+{!! NoCaptcha::renderJs() !!}
+
+<script>
+
+    if(firm_hide == true)
+    {
+        $('#firm_div').attr('hidden',true);
+    }
+
+    if(color_firm_hide == true)
+    {
+        $('#color_firm_div').attr('hidden',true);
+    }
+
+    if(attach_hole_hide == true)
+    {
+        $('#attach_hole_div').attr('hidden',true);
+    }
+
+    if(size_hide == true)
+    {
+        $('#size_div').attr('hidden',true);
+    }
+
+    $('#customer_feedback_add').on('submit', function () {
+        $(this).find('button[type="submit"]').prop('disabled', true);
+    })
+
+    var orig_price = $('.orig_price').val();
+
+    $('select').on('change',function() {
+
+
+        console.log($(this).val());
+
+        var firm_first = 0;
+        var first = 0;
+        var second = 0;
+        var third = 0;
+
+        if($('#firm').val() == "" || $('#firm').val() == "nodata")
+        {
+            var firm_first = '0';
+        }
+        else
+        {
+            var firm_first = $('#firm').val().split('_')[1];
+           
+        }
+
+        if($('#color_firm').val() == "" || $('#color_firm').val() == "nodata")
+        {
+            var first = '0';
+        }
+        else
+        {
+            var first = $('#color_firm').val().split('_')[1];
+           
+        }
+
+        if($('#attach_hole').val() == "" || $('#attach_hole').val() == "nodata")
+        {
+            var second = '0';
+
+        }
+        else
+        {
+            var second = $('#attach_hole').val().split('_')[1];
+
+        }
+
+        if($('#size').val() == "" || $('#size').val() == "nodata")
+        {
+            var third = '0';
+
+        }
+        else
+        {
+            var third = $('#size').val().split('_')[1];   
+
+        }
+
+        var orig_price_tots = (parseFloat(orig_price)+parseFloat(firm_first)+parseFloat(first)+parseFloat(second)+parseFloat(third)).toFixed(2);
+
+        if($('.price').attr('data-feature') == '1')
+        {
+            // with 15%
+           var price_tots = (parseFloat(parseFloat(orig_price)+parseFloat(firm_first)+parseFloat(first)+parseFloat(second)+parseFloat(third)) - parseFloat(parseFloat(orig_price)+parseFloat(firm_first)+parseFloat(first)+parseFloat(second)+parseFloat(third))*0.15).toFixed(2); 
+        }
+        else if($('.price').attr('data-sale') == '1')
+        {
+            // cybersale%
+            var percs = $('#sale_percent_cyber').val();
+           var price_tots = (parseFloat(parseFloat(orig_price)+parseFloat(firm_first)+parseFloat(first)+parseFloat(second)+parseFloat(third)) - parseFloat(parseFloat(orig_price)+parseFloat(firm_first)+parseFloat(first)+parseFloat(second)+parseFloat(third))*(percs/100)).toFixed(2); 
+        }
+        else
+        {
+           var price_tots = (parseFloat(orig_price)+parseFloat(firm_first)+parseFloat(first)+parseFloat(second)+parseFloat(third)).toFixed(2); 
+        }
+       
+        $('.feature_price').html( orig_price_tots ) //orig price strikedthrough
+        $('.price').val( price_tots );
+
+        // alert($('#id').val());
+
+        if($('#id').val() == 96)
+        {
+
+            var str1 = $('#size').val();
+            var str2 = "XL";
+
+            if(str1.indexOf(str2) != -1){
+                
+                $('#firm option[value="Packer Soft_0.00"]').attr("disabled", true);
+            }
+            else
+            {
+                $('#firm option[value="Packer Soft_0.00"]').attr("disabled", false);
+            }
+
+        }
+        
+    });
+
+    if($('#id').val() == 87)
+    {
+
+        $('#color_firm option[value="No Additional Ring_0.00"]').prop("disabled", false);
+        $('#color_firm option[value="No Additional Ring_0.00"]').html('No Additional Ring');
+        $('#attach_hole option[value="No Additional Ring_0.00"]').prop("disabled", false);
+        $('#attach_hole option[value="No Additional Ring_0.00"]').html('No Additional Ring');
+        
+        // alert($('#attach_hole option[value="No Additional Ring_0.00"]').val());
+
+
+    }
+
+    if($('#id').val() == 319)//marble red placement
+    {
+
+        // var marble_option_1_red = $('#color_firm option[value="Red_0.00"]');
+        // var marble_option_1_uv = $('#color_firm option[value="UV Electric Orange_0.00"]');
+
+        // var marble_option_2_red = $('#attach_hole option[value="Red_0.00"]');
+        // var marble_option_2_uv = $('#attach_hole option[value="UV Electric Orange_0.00"]');
+
+        // marble_option_1_red.insertBefore(marble_option_1_uv);
+        // marble_option_2_red.insertBefore(marble_option_2_uv);
+
+        //change placement of dropdown
+        $('#size_div').insertAfter($('#attach_hole_div'));
+    }
+
+    // if($('#id').val() == 69)//solid red placement
+    // {
+            
+    //     var solid_option_1_red = $('#color_firm option[value="Red_0.00"]');
+    //     var solid_option_1_uv = $('#color_firm option[value="UV Electric Orange_0.00"]');
+
+
+    //     solid_option_1_red.insertBefore(solid_option_1_uv);
+
+    // }
+
+    $('#write_rev_btn').click(function(){    
+        // var check_log = {{auth()->check()}} + '';
+
+        // if(check_log == '')
+        // {
+        //     //alert here that says user need to log in before writing a review
+        //     swal({
+        //             title: "You are not logged in.",
+        //             text: "Please login to continue.",
+        //             type: "warning",
+        //             showCancelButton: true,
+        //             // confirmButtonColor: '#DD6B55',
+        //             confirmButtonText: 'Proceed to login',
+        //             cancelButtonText: "Cancel"
+        //         },
+        //         function(isConfirm){
+        //         if (isConfirm){
+        //             @php
+        //                 session()->put('redirect_product_link',request()->path());
+        //             @endphp
+        //             window.location.href = '{{url('signin')}}';
+
+        //         } else {
+        //             return false;
+        //         }
+        //         });
+        // }
+        // else
+        // {
+            $('#write-review').modal('show');
+        // }
+
+    });
+
+    var check_red = '{{$request_redirect}}';
+    
+    if(check_red == 'true')
+    {
+       $('#tab_reviews').click();
+       $('#write_rev_btn').click(); 
+    };
+
+    $('#click_star').on('click',function()
+    {
+        $('#tab_reviews').click();
+    });
+
+    $('#contentProductDescription a').on('click', function(e)
+    {
+        e.preventDefault();
+        window.open($(this).attr('href'), '_blank');
+    });
+
+</script>
+
+@include('front.pages.custom-page.blade_with_js.product_add_to_favorite')
+
+<script type="text/javascript" src="{{ asset('public/js/libraries/front_products.js') }}"></script>
+<script type="text/javascript" src="{{ asset('public/js/libraries/front_carts.js') }}"></script>
+@endpush
